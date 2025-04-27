@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shipping Billing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-2xl">
+    <h2 class="text-2xl font-bold mb-6 text-center">Shipping Billing Setup</h2>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Shipment Field -->
+      <div>
+        {{ form.shipment.label_tag }}
+        {{ form.shipment }}
+      </div>
+
+      <!-- Bill Type Field -->
+      <div>
+        {{ form.bill_type.label_tag }}
+        {{ form.bill_type }}
+      </div>
+
+      <!-- Customer Dropdown (Visible only if "single_customer" is selected) -->
+      <div id="customer-select-box" class="hidden">
+        <label for="customer-select" class="block text-sm font-medium text-gray-700">Select Customer</label>
+        <select id="customer-select" name="selected_customer" class="w-full px-4 py-2 border rounded">
+          <option value="">-- Choose Customer --</option>
+        </select>
+      </div>
+
+      <!-- Exchange Rate Field -->
+      <div>
+        {{ form.exchange_rate.label_tag }}
+        {{ form.exchange_rate }}
+      </div>
+
+      <!-- Channels -->
+      <div>
+        {{ form.shipping_channel.label_tag }}
+        {{ form.shipping_channel }}
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">
+        🔍 Preview Billing
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'admin_dashboard' %}" class="text-sm text-blue-500 hover:underline">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const billTypeSelect = document.querySelector('[name="bill_type"]');
+      const shipmentSelect = document.querySelector('[name="shipment"]');
+      const customerBox = document.getElementById('customer-select-box');
+      const customerSelect = document.getElementById('customer-select');
+
+      function fetchAndRenderCustomers(shipmentId) {
+        fetch(`/api/get-customers/?shipment_id=${shipmentId}`)
+          .then(res => res.json())
+          .then(data => {
+            customerSelect.innerHTML = '<option value="">-- Choose Customer --</option>';
+            data.customers.forEach(c => {
+              const option = document.createElement('option');
+              option.value = c.id;
+              option.textContent = `${c.name} (${c.phone})`;
+              customerSelect.appendChild(option);
+            });
+          });
+      }
+
+      function toggleCustomerDropdown() {
+        const selectedType = billTypeSelect.value;
+        if (selectedType === 'single_customer') {
+          customerBox.classList.remove('hidden');
+          const shipmentId = shipmentSelect.value;
+          if (shipmentId) {
+            fetchAndRenderCustomers(shipmentId);
+          }
+        } else {
+          customerBox.classList.add('hidden');
+          customerSelect.innerHTML = '';
+        }
+      }
+
+      billTypeSelect.addEventListener('change', toggleCustomerDropdown);
+      shipmentSelect.addEventListener('change', () => {
+        if (billTypeSelect.value === 'single_customer') {
+          toggleCustomerDropdown();
+        }
+      });
+
+      // Init on page load (in case of back navigation)
+      toggleCustomerDropdown();
+    });
+  </script>
+</body>
+</html>

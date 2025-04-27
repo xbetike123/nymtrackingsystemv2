@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Shipment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-10 px-6">
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">📦 Add New Shipment</h1>
+
+    <!-- ✅ Display success or error messages -->
+    {% if messages %}
+      <div class="mb-6">
+        {% for message in messages %}
+          <div class="p-4 mb-4 rounded-md shadow-sm {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>{{ form.shipment_type.label_tag }} {{ form.shipment_type }}</div>
+      <div>{{ form.tracking_number.label_tag }} {{ form.tracking_number }}</div>
+      <div>{{ form.location.label_tag }} {{ form.location }}</div>
+      <div>{{ form.eta.label_tag }} {{ form.eta }}</div>
+
+      <!-- ✅ Working CSV file input -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Customer CSV File</label>
+        <input type="file" name="customer_csv" accept=".csv" required class="block w-full border border-gray-300 rounded px-4 py-2" />
+        <p class="text-sm text-gray-500 mt-1">Upload a valid CSV file</p>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold">
+        Submit Shipment
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'admin_dashboard' %}" class="text-sm text-blue-500 hover:underline">← Back to Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>

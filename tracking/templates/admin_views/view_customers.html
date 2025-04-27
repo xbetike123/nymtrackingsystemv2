@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shipment Customers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">
+      📦 Customers for Shipment: {{ shipment.tracking_number }}
+    </h1>
+
+    <table class="min-w-full text-sm divide-y divide-gray-200 mt-6">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="text-left px-4 py-2">Customer Name</th>
+          <th class="text-left px-4 py-2">Phone</th>
+          <th class="text-left px-4 py-2">Email</th>
+          <th class="text-left px-4 py-2">Weight</th>
+          <th class="text-left px-4 py-2">Shipping Cost</th>
+          <th class="text-left px-4 py-2">Clearing Cost</th>
+          <th class="text-left px-4 py-2">Total Payable</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for customer in customers %}
+          <tr>
+            <td class="px-4 py-2">{{ customer.name }}</td>
+            <td class="px-4 py-2">{{ customer.phone }}</td>
+            <td class="px-4 py-2">{{ customer.email }}</td>
+            <td class="px-4 py-2">{{ customer.weight }}</td>
+            <td class="px-4 py-2">₦{{ customer.shipping_cost }}</td>
+            <td class="px-4 py-2">₦{{ customer.clearing_cost }}</td>
+            <td class="px-4 py-2 font-bold text-green-700">₦{{ customer.total }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-4 text-gray-500">
+              No customers found for this shipment.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'view_shipments' %}" class="text-blue-600 hover:underline">
+        ← Back to All Shipments
+      </a>
+    </div>
+  </div>
+</body>
+</html>

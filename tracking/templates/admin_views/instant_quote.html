@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instant Shipping Quote</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% load humanize %}
+</head>
+<body class="bg-gray-100 py-10 px-4 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
+    <h1 class="text-2xl font-bold mb-4 text-center">
+      ⚡ Instant Shipping Quote
+    </h1>
+
+    <!-- Tab Switch -->
+    <div class="flex justify-center mb-6">
+      <button onclick="showForm('air')" id="btn-air" class="px-4 py-2 bg-blue-600 text-white rounded-l-lg">Air Quote</button>
+      <button onclick="showForm('sea')" id="btn-sea" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r-lg">Sea Quote</button>
+    </div>
+
+    <!-- Air Quote Form -->
+    <form id="form-air" method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-semibold mb-1">Weight (kg):</label>
+        <input type="number" step="any" name="weight" value="{{ weight }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Shipping Rate ($):</label>
+        <input type="number" step="any" name="shipping_rate" value="{{ shipping_rate }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Clearing Rate (₦):</label>
+        <input type="number" name="clearing_rate" value="{{ clearing_rate }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Exchange Rate (₦/$):</label>
+        <input type="number" name="exchange_rate" value="{{ exchange_rate }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 font-semibold rounded">
+        Calculate
+      </button>
+    </form>
+
+    <!-- Sea Quote Form -->
+    <form id="form-sea" method="post" class="space-y-4 hidden">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-semibold mb-1">Shipment Size (cbm):</label>
+        <input type="number" step="any" name="shipment_size" value="{{ shipment_size }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Shipping Rate ($/CBM):</label>
+        <input type="number" step="any" name="shipping_rate" value="{{ shipping_rate }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Exchange Rate (₦/$):</label>
+        <input type="number" name="exchange_rate" value="{{ exchange_rate }}" class="w-full border rounded px-4 py-2" required>
+      </div>
+      <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 font-semibold rounded">
+        Calculate
+      </button>
+    </form>
+
+    <!-- Result -->
+    {% if result %}
+      <div class="text-center mt-6 text-green-700 font-bold text-xl">
+        ₦ {{ result|intcomma }}
+      </div>
+    {% endif %}
+
+    <!-- Back Link -->
+    <div class="mt-6 text-center">
+      <a href="/admin" class="text-sm text-blue-600 hover:underline">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    function showForm(type) {
+      const btnAir = document.getElementById('btn-air');
+      const btnSea = document.getElementById('btn-sea');
+      const formAir = document.getElementById('form-air');
+      const formSea = document.getElementById('form-sea');
+
+      if (type === 'air') {
+        btnAir.classList.add('bg-blue-600', 'text-white');
+        btnAir.classList.remove('bg-gray-200', 'text-gray-700');
+        btnSea.classList.add('bg-gray-200', 'text-gray-700');
+        btnSea.classList.remove('bg-blue-600', 'text-white');
+        formAir.classList.remove('hidden');
+        formSea.classList.add('hidden');
+      } else {
+        btnSea.classList.add('bg-blue-600', 'text-white');
+        btnSea.classList.remove('bg-gray-200', 'text-gray-700');
+        btnAir.classList.add('bg-gray-200', 'text-gray-700');
+        btnAir.classList.remove('bg-blue-600', 'text-white');
+        formSea.classList.remove('hidden');
+        formAir.classList.add('hidden');
+      }
+    }
+
+    // Default tab
+    showForm('air');
+  </script>
+
+</body>
+</html>

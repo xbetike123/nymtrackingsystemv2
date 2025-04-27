@@ -1,0 +1,9 @@
+asgiref==3.8.1
+Django==5.2
+gunicorn==23.0.0
+packaging==25.0
+pytz==2025.2
+sqlparse==0.5.3
+psycopg2-binary==2.9.9  # ✅ PostgreSQL driver for Django
+dj-database-url==2.1.0   # ✅ Allow parsing DATABASE_URL
+whitenoise==6.6.0        # ✅ For serving static files in production

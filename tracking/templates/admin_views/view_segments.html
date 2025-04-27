@@ -1,0 +1,38 @@
+{% extends "admin_views/base.html" %}
+{% block title %}Segments{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-8 text-center">📂 All Segments</h1>
+
+<div class="flex justify-end mb-6">
+  <a href="{% url 'create_segment' %}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded shadow">
+    ➕ Create Segment
+  </a>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  {% for segment in segments %}
+  <a href="{% url 'view_segment_subscribers' segment.id %}" class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition group relative">
+    <h2 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-yellow-500">{{ segment.name }}</h2>
+
+    <div class="flex items-center justify-center mt-4">
+      <span class="inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">
+        {{ segment.subscribers_count }} Subscriber{% if segment.subscribers_count != 1 %}s{% endif %}
+      </span>
+    </div>
+
+    <div class="absolute top-4 right-4 text-gray-400 group-hover:text-yellow-500">
+      ➔
+    </div>
+  </a>
+  {% empty %}
+  <p class="text-center text-gray-500 col-span-full">No segments found.</p>
+  {% endfor %}
+</div>
+
+<div class="mt-10 text-center">
+  <a href="{% url 'newsletter_dashboard' %}" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded">
+    ← Back to Newsletter Dashboard
+  </a>
+</div>
+{% endblock %}

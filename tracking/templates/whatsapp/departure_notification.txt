@@ -1,0 +1,21 @@
+Dear {{ customer_name }},
+
+Your Naiyuan Mart shipment with tracking number {{ tracking_number }} has departed and is now on its way.
+
+The details are provided below 👇🏾
+
+Weight = {{ weight }} Kg
+Shipping Cost = $ {{ shipping_cost }}
+Clearing Cost = N {{ clearing_cost }}
+Total Payable today = N {{ total_today }}
+
+Track your shipment here: {{ tracking_url }}
+
+...................................................
+
+*N/B*: Due to the high volatility of the Naira, this bill is valid for only 24 hours.
+...................................................
+
+Thank you for trusting us with your business.
+
+

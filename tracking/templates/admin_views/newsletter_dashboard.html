@@ -1,0 +1,139 @@
+{% extends "admin_views/base.html" %}
+
+{% block title %}Newsletter Admin{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-8 text-center">📰 Naiyuan Newsletter Dashboard</h1>
+
+<!-- Quick Actions -->
+<div class="grid gap-6 md:grid-cols-2 mb-10">
+  <a href="{% url 'upload_subscribers' %}" class="block bg-white p-6 rounded-lg shadow hover:bg-yellow-100 transition">
+    <h2 class="text-xl font-bold mb-2">📤 Upload Subscribers</h2>
+    <p class="text-gray-600">Import subscribers from a CSV file.</p>
+  </a>
+
+  <a href="{% url 'view_segments' %}" class="block bg-white p-6 rounded-lg shadow hover:bg-yellow-100 transition">
+    <h2 class="text-xl font-bold mb-2">📂 Segments</h2>
+    <p class="text-gray-600">Manage and view all subscriber segments.</p>
+  </a>
+
+  <a href="{% url 'assign_segment' %}" class="block bg-white p-6 rounded-lg shadow hover:bg-yellow-100 transition">
+    <h2 class="text-xl font-bold mb-2">👥 Assign Segment</h2>
+    <p class="text-gray-600">Assign subscribers to the right group.</p>
+  </a>
+
+  <a href="{% url 'send_newsletter' %}" class="block bg-white p-6 rounded-lg shadow hover:bg-yellow-100 transition">
+    <h2 class="text-xl font-bold mb-2">✉️ Send Newsletter</h2>
+    <p class="text-gray-600">Choose a segment and send your newsletter.</p>
+  </a>
+</div>
+
+<!-- Stats Section -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+  <div class="bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 text-sm">Today</p>
+    <p class="text-2xl font-bold">{{ stats.today }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 text-sm">Last 7 Days</p>
+    <p class="text-2xl font-bold">{{ stats.week }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 text-sm">Last 30 Days</p>
+    <p class="text-2xl font-bold">{{ stats.month }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 text-sm">Total</p>
+    <p class="text-2xl font-bold">{{ stats.total }}</p>
+  </div>
+</div>
+
+<!-- Recent Subscribers Table -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
+  <h2 class="text-xl font-semibold">🆕 New Subscribers</h2>
+
+  <div class="flex items-center space-x-3">
+    <select id="bulkAction" class="border border-gray-300 rounded p-2 text-sm">
+      <option value="">Bulk Actions</option>
+      <option value="delete">🗑️ Delete Selected</option>
+      <option value="move">📂 Move to Segment</option>
+    </select>
+
+    <button onclick="applyBulkAction()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm">
+      Apply
+    </button>
+
+    <a href="{% url 'upload_subscribers' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+      Go to All Subscribers
+    </a>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow overflow-x-auto">
+  <table class="min-w-full table-auto text-sm" id="subscribersTable">
+    <thead class="bg-gray-100 text-gray-700">
+      <tr>
+        <th class="p-3">
+          <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)">
+        </th>
+        <th class="p-3">Name</th>
+        <th class="p-3">Email</th>
+        <th class="p-3">Segment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for subseg in page_obj %}
+      <tr class="border-t hover:bg-gray-50">
+        <td class="p-3">
+          <input type="checkbox" class="row-checkbox" name="selected_subscribers" value="{{ subseg.subscriber.id }}">
+        </td>
+        <td class="p-3">{{ subseg.subscriber.name|default:"-" }}</td>
+        <td class="p-3">{{ subseg.subscriber.email }}</td>
+        <td class="p-3">
+          {% if subseg.segment %}
+            {{ subseg.segment.name }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="p-6 text-center text-gray-400">No subscribers yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination Bar -->
+<div class="flex justify-center items-center mt-6 space-x-2">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border rounded hover:bg-gray-100">« Prev</a>
+  {% endif %}
+
+  <span class="px-4 py-2">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border rounded hover:bg-gray-100">Next »</a>
+  {% endif %}
+</div>
+
+<!-- JavaScript for Select All functionality -->
+<script>
+function toggleSelectAll(source) {
+  const checkboxes = document.querySelectorAll('.row-checkbox');
+  for (const checkbox of checkboxes) {
+    checkbox.checked = source.checked;
+  }
+}
+</script>
+
+<!-- 🔙 Back to Admin Dashboard -->
+<div class="mt-10 text-center">
+  <a href="{% url 'admin_dashboard' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-sm">
+    ← Back to Admin Dashboard
+  </a>
+</div>
+
+{% endblock %}

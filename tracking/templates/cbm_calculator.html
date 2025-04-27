@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBM Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-yellow-50 flex flex-col justify-between">
+
+  <main class="flex flex-col items-center justify-center px-4 py-10">
+    <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 w-full max-w-2xl text-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-yellow-700 mb-6">Cubic Meter Calculator</h1>
+
+      <div class="bg-yellow-100 p-4 md:p-6 rounded-lg space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <input id="length" type="number" placeholder="Length" class="px-3 py-2 rounded border border-gray-300 text-sm" />
+          <input id="width" type="number" placeholder="Width" class="px-3 py-2 rounded border border-gray-300 text-sm" />
+          <input id="height" type="number" placeholder="Height" class="px-3 py-2 rounded border border-gray-300 text-sm" />
+          <select id="unit" class="px-3 py-2 rounded border border-gray-300 text-sm">
+            <option value="cm">cm</option>
+            <option value="m">m</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span class="text-lg font-medium">=</span>
+          <input id="result" type="text" readonly class="px-4 py-2 rounded border border-gray-300 text-sm w-full sm:w-32 text-center" placeholder="?">
+          <span class="text-lg">Cubic Meters</span>
+        </div>
+      </div>
+
+      <p id="result-text" class="text-base md:text-lg text-green-600 font-semibold mt-4"></p>
+
+      <div class="mt-10 relative w-full overflow-x-auto">
+        <svg id="cube-visual" viewBox="0 0 300 200" class="w-full max-w-sm mx-auto text-blue-400">
+          <path id="face1" d="M50,20 L150,20 L180,50 L80,50 Z" stroke="blue" fill="none" />
+          <path id="face2" d="M50,20 L50,120 L80,150 L80,50 Z" stroke="blue" fill="none" />
+          <path id="face3" d="M80,50 L180,50 L180,150 L80,150 Z" stroke="blue" fill="none" />
+
+          <!-- Labels -->
+          <text id="label-length" x="100" y="15" font-size="12" fill="black" text-anchor="middle">Length</text>
+          <text id="label-width" x="195" y="90" font-size="12" fill="black" text-anchor="start">Width</text>
+          <text id="label-height" x="35" y="90" font-size="12" fill="black" text-anchor="end">Height</text>
+          <text id="label-volume" x="130" y="100" font-size="14" fill="green" text-anchor="middle">0 m³</text>
+        </svg>
+      </div>
+
+      <!-- CBM Explanation Section -->
+      <div class="mt-10 text-left text-sm">
+        <h2 class="text-lg md:text-xl font-bold text-gray-700 mb-2">📦 Why CBM Matters for Shipments</h2>
+        <p class="text-gray-600 mb-4">
+          CBM stands for <strong>Cubic Meter</strong>, and it’s a unit of volume used to measure the space a shipment occupies — not its weight.
+        </p>
+        <div class="bg-gray-100 rounded-lg p-4">
+          <div class="flex justify-between font-semibold border-b border-gray-300 pb-1 mb-2">
+            <span>Aspect</span>
+            <span>Explanation</span>
+          </div>
+          <div class="flex justify-between py-1 gap-2">
+            <span class="font-medium">What it Measures</span>
+            <span class="text-right">Volume: Length × Width × Height (in meters) = CBM</span>
+          </div>
+          <div class="flex justify-between py-1 gap-2">
+            <span class="font-medium">Why It's Important</span>
+            <span class="text-right">Used by shipping companies to determine freight charges, especially for sea cargo.</span>
+          </div>
+          <div class="flex justify-between py-1 gap-2">
+            <span class="font-medium">Helps You Plan</span>
+            <span class="text-right">Optimizes space, cost estimation, and helps choose between air vs sea shipping.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white w-full text-sm text-gray-600 border-t border-gray-200 py-4 mt-8">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+      <p class="mb-2 md:mb-0">© Naiyuan Mart. All rights reserved.</p>
+      <div class="flex space-x-6">
+        <a href="/cbm-calculator/" class="hover:text-yellow-600">CBM Calculator</a>
+        <a href="/address-generator/" class="hover:text-yellow-600">Address Generator</a>
+        <a href="/contact-us/" class="hover:text-yellow-600">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function convertToMeters(value, unit) {
+      if (unit === "cm") return value / 100;
+      if (unit === "in") return value * 0.0254;
+      return value;
+    }
+
+    function calculateCBM() {
+      const length = parseFloat(document.getElementById("length").value) || 0;
+      const width = parseFloat(document.getElementById("width").value) || 0;
+      const height = parseFloat(document.getElementById("height").value) || 0;
+      const unit = document.getElementById("unit").value;
+
+      const l = convertToMeters(length, unit);
+      const w = convertToMeters(width, unit);
+      const h = convertToMeters(height, unit);
+
+      const cbm = (l * w * h).toFixed(4);
+      document.getElementById("result").value = cbm;
+      document.getElementById("result-text").textContent = `📦 The CBM of your package is ${cbm} m³`;
+      document.getElementById("label-volume").textContent = `${cbm} m³`;
+
+      updateCubeVisual(length, width, height);
+    }
+
+    function updateCubeVisual(l, w, h) {
+      const max = Math.max(l, w, h, 1);
+      const scale = 100 / max;
+
+      const L = l * scale;
+      const W = w * scale;
+      const H = h * scale;
+
+      const x = 60, y = 30;
+      const x2 = x + L;
+      const y2 = y + H;
+      const dx = W * 0.7;
+      const dy = W * 0.5;
+
+      document.getElementById("face1").setAttribute("d", `M${x},${y} L${x2},${y} L${x2 + dx},${y + dy} L${x + dx},${y + dy} Z`);
+      document.getElementById("face2").setAttribute("d", `M${x},${y} L${x},${y2} L${x + dx},${y2 + dy} L${x + dx},${y + dy} Z`);
+      document.getElementById("face3").setAttribute("d", `M${x + dx},${y + dy} L${x2 + dx},${y + dy} L${x2 + dx},${y2 + dy} L${x + dx},${y2 + dy} Z`);
+
+      document.getElementById("label-length").setAttribute("x", (x + x2) / 2);
+      document.getElementById("label-length").setAttribute("y", y - 5);
+
+      document.getElementById("label-width").setAttribute("x", x2 + dx + 5);
+      document.getElementById("label-width").setAttribute("y", y + dy + 5);
+
+      document.getElementById("label-height").setAttribute("x", x - 5);
+      document.getElementById("label-height").setAttribute("y", (y + y2) / 2);
+
+      document.getElementById("label-volume").setAttribute("x", x + dx + (L / 2));
+      document.getElementById("label-volume").setAttribute("y", y + dy + (H / 2));
+    }
+
+    document.querySelectorAll("#length, #width, #height, #unit").forEach(input => {
+      input.addEventListener("input", calculateCBM);
+    });
+  </script>
+</body>
+</html>

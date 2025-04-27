@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Address Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen px-4 py-10">
+  <div class="max-w-xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-xl">
+    <h1 class="text-2xl font-bold text-yellow-600 text-center mb-6">📮 Address Generator</h1>
+
+    <form id="addressForm" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium">Full Name</label>
+        <input type="text" id="name" name="name" required class="mt-1 block w-full rounded border border-gray-300 p-2" />
+      </div>
+
+      <div>
+        <label for="phone" class="block text-sm font-medium">Phone Number</label>
+        <input type="text" id="phone" name="phone" required class="mt-1 block w-full rounded border border-gray-300 p-2" />
+      </div>
+
+      <div>
+        <label for="shipmentType" class="block text-sm font-medium">Shipment Type</label>
+        <select id="shipmentType" name="shipmentType" required class="mt-1 block w-full rounded border border-gray-300 p-2">
+          <option value="air">Air Express</option>
+          <option value="cargo">Air Cargo</option>
+          <option value="sea">Sea Cargo</option>
+        </select>
+      </div>
+
+      <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white w-full py-2 px-4 rounded">Generate Address</button>
+    </form>
+
+    <div id="resultSection" class="mt-8 hidden">
+      <h2 class="text-lg font-semibold mb-4 text-center text-green-600">✅ Address Generated</h2>
+
+      <div class="mb-6">
+        <p class="text-sm font-semibold mb-1">📦 地址（中文）:</p>
+        <div class="bg-gray-100 p-3 rounded relative">
+          <pre id="addressChinese" class="whitespace-pre-wrap text-sm"></pre>
+          <button onclick="copyToClipboard('addressChinese')" class="absolute top-2 right-2 text-xs bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Copy</button>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <p class="text-sm font-semibold mb-1">⚠️ Address in English <span class="text-xs text-red-500 italic">(For informational purposes only)</span></p>
+        <p class="text-xs text-red-600 mb-2">This English address is just for informational purposes, please send only the Chinese version to your suppliers to avoid missing packages.</p>
+        <div class="bg-gray-100 p-3 rounded relative">
+          <pre id="addressEnglish" class="whitespace-pre-wrap text-sm"></pre>
+          <button onclick="copyToClipboard('addressEnglish')" class="absolute top-2 right-2 text-xs bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADDRESS_EN = `Name: {name}\nAddress: Agile Time Mansion\n101 Wehai Road,\nShibi Street, Panyu,\nGuangzhou, China\nPhone: 15603010790\nShipping Mark: {shippingMark}`;
+    const ADDRESS_ZH = `名称: {name}\n地址: 广州市番禺区石壁街道敏捷时空公馆韦海路101号\n电话: 15603010790\n装运标志: {shippingMark}`;
+
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const shippingMark = `${name}_${phone}`;
+
+      const english = ADDRESS_EN.replace('{name}', name).replace('{shippingMark}', shippingMark);
+      const chinese = ADDRESS_ZH.replace('{name}', name).replace('{shippingMark}', shippingMark);
+
+      document.getElementById('addressEnglish').textContent = english;
+      document.getElementById('addressChinese').textContent = chinese;
+
+      document.getElementById('resultSection').classList.remove('hidden');
+    });
+
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard');
+      });
+    }
+  </script>
+</body>
+</html>

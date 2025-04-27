@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-10">
+  <h2 class="text-2xl font-bold mb-6 text-center">Assign Segment to Subscribers</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-4">
+      <label for="segment" class="block font-semibold mb-1">Select Segment</label>
+      <select name="segment" id="segment" class="w-full border p-2 rounded">
+        {% for segment in segments %}
+          <option value="{{ segment.id }}">{{ segment.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold mb-2">Select Subscribers</label>
+      <div class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto border p-3 rounded">
+        {% for sub in subscribers %}
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" name="subscribers" value="{{ sub.id }}">
+            <span>{{ sub.email }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600">Assign</button>
+  </form>
+</div>
+{% endblock %}

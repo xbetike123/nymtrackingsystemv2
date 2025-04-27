@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shipping Message Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen px-6 py-10">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">📨 Message Preview</h2>
+
+    {% for item in bill_data %}
+      <div class="bg-gray-100 p-4 rounded mb-6">
+        <p class="text-sm text-gray-600 mb-2"><strong>To:</strong> {{ item.name }} ({{ item.phone }})</p>
+        <pre class="whitespace-pre-wrap text-sm">{{ item.message }}</pre>
+      </div>
+    {% endfor %}
+
+    <div class="flex justify-between items-center mt-8">
+      <!-- Back Button -->
+      <a href="{% url 'shipping_billing' %}" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 text-sm">
+        ← Back to Billing Form
+      </a>
+
+      <!-- Send Bill Button (form to POST the message) -->
+      <form method="post" action="{% url 'send_shipping_bill' %}">
+        {% csrf_token %}
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 text-sm font-semibold">
+          ✅ Send Bill
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

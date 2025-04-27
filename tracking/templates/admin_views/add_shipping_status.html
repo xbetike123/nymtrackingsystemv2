@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Shipping Status</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
+
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center">📦 Add Shipping Status</h2>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>
+        {{ form.shipment_type.label_tag }}<br>
+        {{ form.shipment_type }}
+      </div>
+
+      <div>
+        {{ form.status_labels.label_tag }}<br>
+        {{ form.status_labels }}
+        <p class="text-sm text-gray-500 mt-1">Separate each status with a comma, e.g. <br><code>Prepared, Shipped, Arrived</code></p>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold">
+        ➕ Add Shipping Status
+      </button>
+    </form>
+
+    {% if messages %}
+      <div class="mt-6 text-green-700 text-sm">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'admin_dashboard' %}" class="text-sm text-blue-500 hover:underline">← Back to Dashboard</a>
+    </div>
+  </div>
+
+</body>
+</html>

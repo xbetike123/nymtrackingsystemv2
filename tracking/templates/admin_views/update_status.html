@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Shipment Status</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
+
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-xl">
+    <h2 class="text-2xl font-bold mb-6 text-center">Update Shipment Tracking</h2>
+
+    <!-- ✅ Show success/error messages -->
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="p-3 rounded text-sm font-semibold
+            {% if message.tags == 'success' %}bg-green-100 text-green-800
+            {% elif message.tags == 'error' %}bg-red-100 text-red-800
+            {% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- Shipment Dropdown -->
+      <label class="block text-sm font-medium text-gray-700">Select Shipment</label>
+      <select name="shipment" id="shipment-select" class="w-full px-4 py-2 border rounded">
+        <option value="">-- Choose Shipment --</option>
+        {% for s in form.fields.shipment.queryset %}
+          <option value="{{ s.id }}">
+            {{ s.tracking_number }} - {{ s.location }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <!-- Location Dropdown (static) -->
+      <label class="block text-sm font-medium text-gray-700">Current Location</label>
+      <select name="location" id="location-select" class="w-full px-4 py-2 border rounded">
+        {% for loc in form.fields.location.choices %}
+          <option value="{{ loc.0 }}">{{ loc.1 }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Status Dropdown (dynamic via JS) -->
+      <label class="block text-sm font-medium text-gray-700">Current Status</label>
+      <select name="status" id="status-select" class="w-full px-4 py-2 border rounded">
+        <option value="">-- Select shipment first --</option>
+      </select>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg">
+        Update Status
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a href="/admin" class="text-sm text-blue-500 hover:underline">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('shipment-select').addEventListener('change', async function () {
+      const shipmentId = this.value;
+      const statusSelect = document.getElementById('status-select');
+
+      statusSelect.innerHTML = '<option>Loading...</option>';
+
+      if (shipmentId) {
+        try {
+          const res = await fetch(`/api/shipment-options/?id=${shipmentId}`);
+          const data = await res.json();
+
+          if (data.statuses.length === 0) {
+            statusSelect.innerHTML = '<option value="">All statuses used</option>';
+          } else {
+            statusSelect.innerHTML = data.statuses.map(st =>
+              `<option value="${st}">${st}</option>`
+            ).join('');
+          }
+        } catch (error) {
+          console.error("Error fetching status options:", error);
+          statusSelect.innerHTML = '<option value="">Error loading statuses</option>';
+        }
+      } else {
+        statusSelect.innerHTML = '<option value="">-- Select shipment first --</option>';
+      }
+    });
+  </script>
+</body>
+</html>

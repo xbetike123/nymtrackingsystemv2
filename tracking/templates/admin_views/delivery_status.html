@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delivery Status</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+
+  <div class="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow-md">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">🚚 Delivery Status Overview</h1>
+
+    <!-- Top Info Section -->
+    <div class="flex flex-wrap justify-between items-center mb-6">
+      <div class="text-gray-700 text-sm">
+        Showing latest <strong>7</strong> message batches
+      </div>
+    </div>
+
+    <!-- Delivery Status Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm divide-y divide-gray-200">
+        <thead class="bg-gray-100 text-left">
+          <tr>
+            <th class="px-4 py-2">Message Type</th>
+            <th class="px-4 py-2">Recipients</th>
+            <th class="px-4 py-2">Email</th>
+            <th class="px-4 py-2">WhatsApp</th>
+            <th class="px-4 py-2">Failed</th>
+            <th class="px-4 py-2">Date</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for item in summary|slice:":7" %}
+            <tr>
+              <td class="px-4 py-3 font-semibold text-gray-800">{{ item.message_type }}</td>
+              <td class="px-4 py-3">{{ item.recipients }}</td>
+              <td class="px-4 py-3">
+                <input type="checkbox" {% if item.email %}checked{% endif %} disabled class="accent-blue-500">
+              </td>
+              <td class="px-4 py-3">
+                <input type="checkbox" {% if item.whatsapp %}checked{% endif %} disabled class="accent-green-500">
+              </td>
+              <td class="px-4 py-3">
+                {% if item.failed %}
+                  <span class="text-red-600 font-bold">{{ item.failed }} Failed</span>
+                {% else %}
+                  <span class="text-green-600 font-bold">None</span>
+                {% endif %}
+              </td>
+              <td class="px-4 py-3">{{ item.date }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-6 text-gray-400">
+                No delivery records found.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-8 text-center">
+      <a href="{% url 'admin_dashboard' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+        ← Back to Dashboard
+      </a>
+    </div>
+<!-- Charts Section -->
+<div class="mt-12">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+    <!-- Pie Chart: Email vs WhatsApp -->
+    <div class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4 text-gray-800">Channel Usage Overview</h2>
+      <canvas id="channelChart" height="250"></canvas>
+    </div>
+
+    <!-- Bar Chart: Recipients per Message Type -->
+    <div class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4 text-gray-800">Recipients by Message Type</h2>
+      <canvas id="recipientsChart" height="250"></canvas>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Prepare data from Django context
+  const summaryData = {{ summary|safe }};
+
+  // Extract Channel Data
+  let emailCount = 0;
+  let whatsappCount = 0;
+
+  summaryData.forEach(entry => {
+    if (entry.email) emailCount += entry.recipients;
+    if (entry.whatsapp) whatsappCount += entry.recipients;
+  });
+
+  // Extract Message Type Data
+  const labels = summaryData.map(e => e.message_type);
+  const recipients = summaryData.map(e => e.recipients);
+
+  // Render Pie Chart
+  new Chart(document.getElementById('channelChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Email', 'WhatsApp'],
+      datasets: [{
+        data: [emailCount, whatsappCount],
+        backgroundColor: ['#3b82f6', '#22c55e'],
+      }]
+    }
+  });
+
+  // Render Bar Chart
+  new Chart(document.getElementById('recipientsChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Recipients',
+        data: recipients,
+        backgroundColor: '#fbbf24',
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Django
+/staticfiles/
+/media/
+
+# Environment
+.env
+.venv/
+venv/
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Ignore node_modules if ever using Tailwind etc
+node_modules/
+
+# Ignore compiled files
+*.pyc

@@ -1,0 +1,40 @@
+{% extends "admin_views/base.html" %}
+{% block title %}{{ segment.name }} Subscribers{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-8 text-center">{{ segment.name }} Subscribers</h1>
+
+<div class="bg-white rounded-xl shadow overflow-x-auto">
+  <table class="min-w-full text-sm divide-y divide-gray-200">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="text-left px-4 py-2">Name</th>
+        <th class="text-left px-4 py-2">Email</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for subseg in subscribers %}
+      <tr>
+        <td class="px-4 py-2">{{ subseg.subscriber.name|default:"-" }}</td>
+        <td class="px-4 py-2">{{ subseg.subscriber.email }}</td>
+      </tr>
+     {% empty %}
+<tr>
+  <td colspan="2" class="py-6">
+    <div class="text-center text-gray-500">
+      🚫 No subscribers found inside <span class="font-semibold">{{ segment.name }}</span> yet.
+    </div>
+  </td>
+</tr>
+{% endempty %}
+
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-10 text-center">
+  <a href="{% url 'view_segments' %}" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded">
+    ← Back to Segments
+  </a>
+</div>
+{% endblock %}

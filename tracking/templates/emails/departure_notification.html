@@ -1,0 +1,153 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipment Notification</title>
+  <style type="text/css">
+    /* ✅ Preview Text Optimization */
+    .preview-text {
+      display: none;
+      font-size: 1px;
+      color: #ffffff;
+      line-height: 1px;
+      max-height: 0px;
+      max-width: 0px;
+      opacity: 0;
+      overflow: hidden;
+      mso-hide: all;
+      visibility: hidden;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .container {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .email-wrapper {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      max-width: 150px;
+      height: auto;
+    }
+    h2 {
+      color: #333333;
+      font-size: 24px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    p {
+      color: #555555;
+      font-size: 16px;
+      margin: 10px 0;
+      text-align: left;
+    }
+    .info-box {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+    .info-line {
+      color: #333;
+      font-size: 15px;
+      margin: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+    .info-line:last-child {
+      border-bottom: none;
+    }
+    .highlight {
+      color: #d9534f;
+      font-weight: bold;
+    }
+    .button {
+      display: block;
+      margin: 20px auto 10px;
+      padding: 12px 24px;
+      background-color: #fdd445;
+      color: #000000;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #aaaaaa;
+      text-align: center;
+    }
+    @media screen and (max-width: 480px) {
+      .email-wrapper {
+        padding: 18px;
+      }
+      h2 {
+        font-size: 22px;
+      }
+      p, .info-line {
+        font-size: 14px;
+      }
+      .button {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="email-wrapper">
+
+      <!-- ✅ Hidden Preview Text -->
+      <span class="preview-text">
+        {{ preview_text }}
+      </span>
+
+      <!-- ✅ Logo Section -->
+     <div class="logo">
+  <img src="{% static 'tracking/images/naiyuan_tag.png' %}" alt="Naiyuan Mart Logo" style="max-width: 150px; height: auto;">
+</div>
+
+      <h2>Shipment Update from Naiyuan Mart</h2>
+
+      <p><strong>Dear {{ customer_name }},</strong></p>
+      <p>Your shipment with tracking number <strong>{{ tracking_number }}</strong> has been prepared for shipping.</p>
+
+      <div class="info-box">
+        <div class="info-line">Weight: <strong>{{ weight }} kg</strong></div>
+        <div class="info-line">Shipping Cost: <strong>${{ shipping_cost }}</strong></div>
+        <div class="info-line">Clearing Cost: <strong>₦{{ clearing_cost }}</strong></div>
+        <div class="info-line">Total Payable Today: <span class="highlight">₦{{ total_today }}</span> <span style="color: #777; font-size: 13px;">(Due to the high volatility of the Naira, this bill is valid for only 24 hours.)</span></div>
+      </div>
+
+      <a href="{{ tracking_url }}" class="button">Track Your Shipment</a>
+
+      <p style="text-align: center; margin-top: 20px;">Thank you for trusting us with your business.</p>
+
+      <p class="footer">&copy; 2025 Naiyuan Mart. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "admin_views/base.html" %}
+
+{% block title %}Create Segment{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10">
+
+  <!-- 🔙 Back Button -->
+  <div class="mb-6">
+    <a href="{% url 'newsletter_dashboard' %}"
+       class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Page Heading -->
+  <h2 class="text-2xl font-bold mb-6 text-center">➕ Create New Segment</h2>
+
+  <!-- Form -->
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label for="name" class="block font-semibold mb-1">Segment Name</label>
+      <input type="text" name="name" id="name"
+             class="w-full border border-gray-300 p-2 rounded"
+             placeholder="e.g. VIP Buyers" />
+    </div>
+
+    <button type="submit"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-semibold">
+      Create Segment
+    </button>
+  </form>
+</div>
+{% endblock %}

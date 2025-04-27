@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Preview Notification</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-10 px-6">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">🔍 Preview Notification</h2>
+
+    {% if error %}
+      <p class="text-red-600 text-center">{{ error }}</p>
+    {% else %}
+      <div class="grid gap-6">
+        {% if channels and 'whatsapp' in channels and whatsapp_preview %}
+          <div>
+            <h3 class="font-semibold text-lg mb-2 text-green-700">📲 WhatsApp Message</h3>
+            <pre class="bg-green-50 border border-green-200 p-4 rounded text-sm text-gray-800 whitespace-pre-wrap">{{ whatsapp_preview }}</pre>
+          </div>
+        {% endif %}
+
+        {% if channels and 'email' in channels and email_preview %}
+          <div>
+            <h3 class="font-semibold text-lg mb-2 text-blue-700">📧 Email Preview</h3>
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded text-sm text-gray-800">
+              {{ email_preview|safe }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <form method="post" action="{% url 'send_notifications' %}" class="mt-8 text-center">
+        {% csrf_token %}
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold">
+          ✅ Send Now
+        </button>
+      </form>
+    {% endif %}
+
+    <div class="mt-6 text-center">
+      <a href="{% url 'send_notification' %}" class="text-sm text-blue-500 hover:underline">← Back to Edit</a>
+    </div>
+  </div>
+</body>
+</html>
+

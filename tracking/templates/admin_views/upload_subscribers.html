@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Subscribers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+  <!-- Upload Card -->
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center">📥 Upload Subscribers CSV</h1>
+
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="p-3 rounded text-sm {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <input type="file" name="subscriber_csv" accept=".csv" required class="block w-full text-sm border px-4 py-2 rounded" />
+      <button type="submit" class="w-full bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold">
+        Upload CSV
+      </button>
+    </form>
+
+    <p class="mt-4 text-gray-500 text-sm text-center">
+      CSV must include <code>email</code>, <code>name</code>, and optional <code>segment</code> columns.<br>
+      * For multiple segments, separate them with commas.
+    </p>
+  </div>
+
+  <!-- ✅ OUTSIDE BACK BUTTON -->
+  <div class="mt-6 text-center">
+    <a href="{% url 'newsletter_dashboard' %}" class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-700 px-5 py-2 rounded font-semibold">
+      ← Back to Newsletter Dashboard
+    </a>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "admin_views/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-10">
+  <h2 class="text-2xl font-bold text-center mb-6">✉️ Send Newsletter</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <!-- Segment Selection -->
+    <div class="mb-4">
+      <label for="segment" class="block font-semibold mb-1">Choose Segment</label>
+      <select name="segment_id" id="segment_id" class="border rounded p-2 w-full">
+  {% for segment in segments %}
+    <option value="{{ segment.id }}">{{ segment.name }}</option>
+  {% endfor %}
+</select>
+
+    </div>
+
+    <!-- Subject Input -->
+    <div class="mb-4">
+      <label for="subject" class="block font-semibold mb-1">Subject</label>
+      <input type="text" name="subject" id="subject" class="w-full border p-2 rounded" placeholder="Newsletter subject">
+    </div>
+
+    <!-- Message Textarea -->
+    <div class="mb-4">
+      <label for="message" class="block font-semibold mb-1">Message</label>
+      <textarea name="message" id="message" rows="8" class="w-full border p-3 rounded" placeholder="Write your newsletter content here..."></textarea>
+    </div>
+
+    <!-- Send Button -->
+    <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600">Send Newsletter</button>
+  </form>
+</div>
+<div class="mt-8 text-center">
+  <a href="{% url 'newsletter_dashboard' %}" class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-6 py-2 rounded-lg text-sm">
+    ← Back to Newsletter Dashboard
+  </a>
+</div>
+
+{% endblock %}
+.
