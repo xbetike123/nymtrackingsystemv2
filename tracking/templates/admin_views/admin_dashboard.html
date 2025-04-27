@@ -8,6 +8,7 @@
   <title>Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- ✅ Chart.js loaded -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> <!-- ✅ Alpine.js loaded -->
 </head>
 <body class="bg-gray-100 text-gray-800">
 
@@ -23,43 +24,43 @@
 <div class="flex min-h-screen">
 
   <!-- Left Sidebar -->
- <!-- Add Alpine.js to your layout -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <aside class="w-72 bg-white shadow-md p-6 space-y-4">
 
-<nav class="flex flex-col space-y-2 mt-6" x-data="{ openShipment: false }">
+    <nav class="flex flex-col space-y-2 mt-6">
 
-  <a href="{% url 'add_shipping_location' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
-    Add Shipping Locations
-  </a>
-
-  <!-- Shipment Status with submenu -->
-  <div>
-    <button @click="openShipment = !openShipment"
-            class="w-full text-left flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
-      Add Shipment Status
-      <svg :class="{'rotate-180': openShipment}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
-
-    <div x-show="openShipment" x-transition class="pl-6 mt-1">
-      <a href="{% url 'view_status_templates' %}" class="block text-sm text-gray-500 hover:text-gray-700 py-1">
-        View Status Templates
+      <a href="{% url 'add_shipping_location' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
+        Add Shipping Locations
       </a>
-    </div>
-  </div>
 
-  <a href="{% url 'add_user' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
-    Add New User
-  </a>
+      <!-- Shipment Status with submenu -->
+      <div x-data="{ openShipment: false }">
+        <button @click="openShipment = !openShipment"
+                class="w-full text-left flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
+          Shipment Status
+          <svg :class="{'rotate-180': openShipment}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-  <a href="{% url 'newsletter_dashboard' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
-    Newsletter Zone
-  </a>
+        <div x-show="openShipment" x-transition class="pl-6 mt-1 space-y-1">
+          <a href="{% url 'add_shipment_status' %}" class="block text-sm text-gray-500 hover:text-gray-700 py-1">
+            ➕ Add Shipment Status
+          </a>
+          <a href="{% url 'view_status_templates' %}" class="block text-sm text-gray-500 hover:text-gray-700 py-1">
+            📋 View Status Templates
+          </a>
+        </div>
+      </div>
 
-</nav>
+      <a href="{% url 'add_user' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
+        Add New User
+      </a>
 
+      <a href="{% url 'newsletter_dashboard' %}" class="flex items-center justify-between text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg font-medium">
+        Newsletter Zone
+      </a>
 
+    </nav>
 
   </aside>
 
@@ -135,12 +136,9 @@
       <h2 class="text-2xl font-bold mb-6 text-gray-700">📈 Delivery Analytics</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Channel Pie Chart -->
         <div class="bg-white p-6 rounded-xl shadow-md">
           <canvas id="channelChart"></canvas>
         </div>
-
-        <!-- Recipients by Message Type -->
         <div class="bg-white p-6 rounded-xl shadow-md">
           <canvas id="recipientsChart"></canvas>
         </div>
@@ -151,20 +149,22 @@
 
   <!-- Right Sidebar -->
   <aside class="w-72 bg-white shadow-md p-6 space-y-6">
+
     <div class="bg-gray-50 border-l-4 border-blue-500 p-4 rounded-xl shadow-sm">
       <h3 class="font-semibold text-gray-700 text-lg mb-2">👤 Admin Info</h3>
       <p><strong>Username:</strong> {{ request.user.username }}</p>
       <p><strong>Logged in:</strong> <span id="active-time">--</span></p>
       <p><strong>Role:</strong> Super Admin</p>
     </div>
+
     <div class="bg-gray-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm mt-6">
-  <form method="post" action="{% url 'logout_view' %}">
-    {% csrf_token %}
-    <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center justify-center gap-2">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  </form>
-</div>
+      <form method="post" action="{% url 'logout_view' %}">
+        {% csrf_token %}
+        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center justify-center gap-2">
+          Logout
+        </button>
+      </form>
+    </div>
 
     <div class="bg-gray-50 border-l-4 border-yellow-400 p-4 rounded-xl shadow-sm">
       <h3 class="font-semibold text-gray-700 text-lg mb-2">🌐 Time Zones</h3>
@@ -177,7 +177,9 @@
         <p id="nigeria-time" class="text-lg font-mono text-green-600">--:--</p>
       </div>
     </div>
+
   </aside>
+
 </div>
 
 <!-- Footer -->
