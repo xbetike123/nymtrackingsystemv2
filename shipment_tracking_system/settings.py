@@ -13,9 +13,16 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allowed Hosts
 RENDER_HOST = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+CUSTOM_DOMAIN = os.environ.get('CUSTOM_DOMAIN')  # <-- new
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
 if RENDER_HOST:
     ALLOWED_HOSTS.append(RENDER_HOST)
+
+if CUSTOM_DOMAIN:
+    ALLOWED_HOSTS.append(CUSTOM_DOMAIN)
+
 
 # Installed Apps
 INSTALLED_APPS = [
