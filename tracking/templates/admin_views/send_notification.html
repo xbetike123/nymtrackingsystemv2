@@ -1,4 +1,6 @@
 {% extends "admin_views/base.html" %}
+{% load static %}  {# ✅ Always load static at the top after extends #}
+
 {% block content %}
 <div class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
   <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-2xl">
@@ -13,22 +15,22 @@
         <select name="shipment_id" required class="w-full px-4 py-2 border rounded">
           <option value="">-- Select Shipment --</option>
           {% for s in shipments %}
-            <option value="{{ s.id }}">{{ s.tracking_number }}{% if s.destination %} — {{ s.destination }}{% endif %}</option> <!-- ✅ Fixed field -->
+            <option value="{{ s.id }}">{{ s.tracking_number }}{% if s.destination %} — {{ s.destination }}{% endif %}</option>
           {% endfor %}
         </select>
       </div>
 
-      <!-- Notification Type -->
-      <div>
-        <label class="block mb-1 font-medium">Notification Type</label>
-        <select name="notification_type" required class="w-full px-4 py-2 border rounded">
-          <option value="">-- Select Type --</option>
-          <option value="departure">Departure</option>
-          <option value="arrival">Arrival</option>
-          <option value="pickup">Ready for Pickup</option> <!-- ✅ Fixed name -->
-          <option value="billing">Billing</option>
-        </select>
-      </div>
+    <!-- Notification Type -->
+<div>
+  <label class="block mb-1 font-medium">Notification Type</label>
+  <select name="notification_type" required class="w-full px-4 py-2 border rounded">
+    <option value="">-- Select Type --</option>
+    <option value="departure">Departure</option>
+    <option value="arrival">Arrival</option>
+    <option value="pickup">Ready for Pickup</option>
+  </select>
+</div>
+
 
       <!-- Delivery Channels -->
       <div>

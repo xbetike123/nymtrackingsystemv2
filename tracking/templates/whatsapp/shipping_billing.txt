@@ -1,0 +1,23 @@
+Hello {{ customer.name }},
+
+Your shipment is ready for pickup!
+
+Pickup Address:
+8/10 Musa Oyinbo Close, Off Wulemotu Agbo Central Mosque Road,
+International Airport Road, 7/8 Bus Stop, Lagos.
+
+Details:
+- Weight: {{ customer.weight }} kg
+- Shipping Fee: ${{ customer.shipping_cost }}
+- Clearing Fee: ₦{{ customer.clearing_cost }}
+- Exchange Rate: ₦{{ exchange_rate }}
+- Total Payable: ₦{{ total_payable }} (valid for 24 hours)
+
+Payment Details:
+Account: 2034181913
+Name: Naiyuan Mart
+Bank: First Bank of Nigeria
+
+📞 Contact Warehouse: +234 816 809 4074
+
+Thank you for choosing Naiyuan Mart!

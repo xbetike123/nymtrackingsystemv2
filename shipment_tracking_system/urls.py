@@ -1,8 +1,7 @@
 from django.urls import path
 from tracking.frontend_views import cbm_calculator, address_generator, contact_us
-
 from tracking.views import (
-    public_views,
+    tracking_views,
     auth_views,
     dashboard_views,
     shipment_views,
@@ -13,14 +12,14 @@ from tracking.views import (
     billings_views,
     newsletter_views
 )
-
-# ✅ Import settings and static correctly
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     # Public access
-    path('', public_views.track_shipment, name='home'),
+    path('', tracking_views.track_shipment, name='home'),  # ✅ Form submission (POST)
+    path('track/', tracking_views.track_shipment, name='track_shipment'),  # ✅ URL query tracking (GET)
+
     path('cbm-calculator/', cbm_calculator, name='cbm_calculator'),
     path('address-generator/', address_generator, name='address_generator'),
     path('contact-us/', contact_us, name='contact_us'),
@@ -45,7 +44,7 @@ urlpatterns = [
     path('admin/update-status/', status_views.update_shipment_status, name='update_shipment_status'),
     path('api/shipment-options/', status_views.shipment_options_api, name='shipment_options_api'),
 
-    # Customer View
+    # Customer Management
     path('admin/view-customers/<int:shipment_id>/', customer_views.view_customers, name='view_customers'),
     path('admin/add-user/', customer_views.add_user_view, name='add_user'),
 
@@ -65,7 +64,7 @@ urlpatterns = [
     path('admin/send-shipping-bill/', billings_views.send_shipping_bill, name='send_shipping_bill'),
     path('admin/delivery-status/', dashboard_views.delivery_status_view, name='delivery_status'),
 
-    # Newsletter management
+    # Newsletter Management
     path('admin/upload-subscribers/', newsletter_views.upload_subscribers_view, name='upload_subscribers'),
     path('admin/assign-segment/', newsletter_views.assign_segment_view, name='assign_segment'),
     path('admin/send-newsletter/', newsletter_views.send_newsletter_view, name='send_newsletter'),
@@ -80,7 +79,6 @@ urlpatterns = [
     path('admin/segments/<int:segment_id>/subscribers/', newsletter_views.view_segment_subscribers, name='view_segment_subscribers'),
     path('admin/segments/<int:segment_id>/bulk-remove/', newsletter_views.bulk_remove_from_segment, name='bulk_remove_from_segment'),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,3 +1,5 @@
+{% load shipment_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +34,10 @@
       <select name="shipment" id="shipment-select" class="w-full px-4 py-2 border rounded">
         <option value="">-- Choose Shipment --</option>
         {% for s in form.fields.shipment.queryset %}
-          <option value="{{ s.id }}">
+         <option value="{{ s.id }}">{{ s.tracking_number }} — {{ s.created_at|date:"jS F Y" }}</option>
+
+
+
             {{ s.tracking_number }} - {{ s.location }}
           </option>
         {% endfor %}

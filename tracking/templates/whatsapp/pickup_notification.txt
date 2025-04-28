@@ -1,4 +1,4 @@
-Hello {{ customer.name }},
+Hello {{ customer_name }},
 
 Your shipment is ready for pickup at our warehouse:
 
@@ -6,11 +6,11 @@ Your shipment is ready for pickup at our warehouse:
 International Airport Road, 7/8 Bus Stop, Lagos.
 
 Details:
-Weight: {{ customer.weight }} kg
-Shipping Fee: ${{ customer.shipping_cost }}
-Clearing Fee: ₦{{ customer.clearing_cost }}
+Weight: {{ weight }} kg
+Shipping Fee: ${{ shipping_cost }}
+Clearing Fee: ₦{{ clearing_cost }}
 Exchange Rate: ₦{{ exchange_rate }}
-Total Payable: ₦{{ total_payable }} (valid for 24 hours)
+Total Payable: ₦{{ total_today }} (valid for 24 hours)
 
 Please make payment to:
 Account Number: 2034181913

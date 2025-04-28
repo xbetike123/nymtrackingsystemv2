@@ -6,15 +6,30 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen px-6 py-10">
-  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">📨 Message Preview</h2>
 
-    {% for item in bill_data %}
-      <div class="bg-gray-100 p-4 rounded mb-6">
-        <p class="text-sm text-gray-600 mb-2"><strong>To:</strong> {{ item.name }} ({{ item.phone }})</p>
-        <pre class="whitespace-pre-wrap text-sm">{{ item.message }}</pre>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      {% if email_preview %}
+      <div class="bg-gray-50 p-4 rounded shadow">
+        <h3 class="text-lg font-semibold mb-4 text-blue-700">📧 Email Preview</h3>
+        <div class="text-sm text-gray-800 overflow-auto">
+          {{ email_preview|safe }}
+        </div>
       </div>
-    {% endfor %}
+      {% endif %}
+
+      {% if whatsapp_preview %}
+      <div class="bg-gray-50 p-4 rounded shadow">
+        <h3 class="text-lg font-semibold mb-4 text-green-700">💬 WhatsApp Preview</h3>
+        <div class="text-sm text-gray-800 whitespace-pre-line overflow-auto">
+          {{ whatsapp_preview }}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
 
     <div class="flex justify-between items-center mt-8">
       <!-- Back Button -->
@@ -22,7 +37,7 @@
         ← Back to Billing Form
       </a>
 
-      <!-- Send Bill Button (form to POST the message) -->
+      <!-- Send Bill Button -->
       <form method="post" action="{% url 'send_shipping_bill' %}">
         {% csrf_token %}
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 text-sm font-semibold">

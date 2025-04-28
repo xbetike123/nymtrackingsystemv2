@@ -1,6 +1,6 @@
-Dear {{ customer.name }},
+Dear {{ customer_name }},
 
-Good news! Your Naiyuan Mart shipment with tracking number {{ shipment.tracking_number }} has arrived at Murtala Muhammed Airport and is currently awaiting customs clearance.
+Good news! Your Naiyuan Mart shipment with tracking number {{ tracking_number }} has arrived at Murtala Muhammed Airport and is currently awaiting customs clearance.
 
 We will notify you once it is ready for pickup.
 

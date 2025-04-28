@@ -1,0 +1,23 @@
+<p>Dear {{ customer.name }},</p>
+
+<p>Your shipment is ready for pickup at our Warehouse:</p>
+
+<p><strong>Address:</strong> 8/10 Musa Oyinbo Close, Off Wulemotu Agbo Central Mosque Road,<br>
+International Airport Road, 7/8 Bus Stop, Lagos.</p>
+
+<p><strong>Details:</strong><br>
+- Weight: {{ customer.weight }} kg<br>
+- Shipping Fee: ${{ customer.shipping_cost }}<br>
+- Clearing Fee: ₦{{ customer.clearing_cost }}<br>
+- Exchange Rate: ₦{{ exchange_rate }}<br>
+- Total Payable: ₦{{ total_payable }} (valid for 24 hours)
+</p>
+
+<p>Please make payment to:<br>
+Account Number: 2034181913<br>
+Account Name: Naiyuan Mart<br>
+Bank: First Bank of Nigeria</p>
+
+<p>For inquiries: +234 816 809 4074</p>
+
+<p>Thank you for your continued patronage!</p>

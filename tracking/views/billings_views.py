@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from tracking.forms import BillingForm
 from django.contrib import messages
-
+from django.template.loader import render_to_string  # ✅ Added
+from tracking.forms import BillingForm
 from tracking.models import ShipmentCustomer, Shipment
-
 
 @login_required
 def shipping_billing_view(request):
@@ -14,7 +13,6 @@ def shipping_billing_view(request):
     if request.method == 'POST':
         form = BillingForm(request.POST)
         if form.is_valid():
-            # Convert POST to dict and preserve list fields manually
             post_data = request.POST.copy()
             form_data = post_data.dict()
             form_data['shipping_channel'] = post_data.getlist('shipping_channel')
@@ -24,7 +22,6 @@ def shipping_billing_view(request):
             return redirect('shipping_billing_preview')
 
     return render(request, 'admin_views/shipping_billing_form.html', {'form': form})
-
 
 @login_required
 def shipping_billing_preview(request):
@@ -56,48 +53,34 @@ def shipping_billing_preview(request):
 
     # Always pick the first customer (even if it's one)
     customer = customers.first()
-    total = (customer.shipping_cost * exchange_rate) + customer.clearing_cost
+    total_payable = (customer.shipping_cost * exchange_rate) + customer.clearing_cost
 
-    message = f"""Hello {customer.name}, your shipment is ready for pickup at our Warehouse, Pickup address is at 8/10 Musa Oyinbo Close, Off Wulemotu Agbo Central Mosque road, International Airport Road, 7/8 busstop, Lagos.
+    # ✅ Build context for templates
+    context = {
+        'customer': customer,
+        'exchange_rate': exchange_rate,
+        'total_payable': round(total_payable, 2),
+    }
 
-Weight: {customer.weight} kg  
-Shipping Fee: ${customer.shipping_cost}  
-Clearing Fee: ₦{customer.clearing_cost}  
-Exchange Rate: ₦{exchange_rate}  
-Total Payable: ₦{round(total, 2)} (Please note this amount is valid for only 24 hours due to exchange rate fluctuation)
+    # ✅ Render email and WhatsApp templates
+    email_preview = None
+    whatsapp_preview = None
 
-Kindly make payment to the account account below:
+    if 'email' in channels:
+        email_preview = render_to_string('emails/shipping_billing_email.html', context)
 
-2034181913
-
-Naiyuan Mart 
-
-First Bank of Nigeria
-
-Thank you for your continued patronage.
-
-You can reach the warehouse on +234 816 809 4074
-"""
-
-    bill_data = [{
-        'name': customer.name,
-        'phone': customer.phone,
-        'weight': customer.weight,
-        'shipping_fee': customer.shipping_cost,
-        'clearing_fee': customer.clearing_cost,
-        'total_payable': round(total, 2),
-        'message': message,
-    }]
+    if 'whatsapp' in channels:
+        whatsapp_preview = render_to_string('whatsapp/shipping_billing.txt', context)
 
     return render(request, 'admin_views/shipping_billing_preview.html', {
         'form': form,
         'bill_type': bill_type,
         'shipment': shipment,
-        'bill_data': bill_data,
         'exchange_rate': exchange_rate,
         'channels': channels,
+        'email_preview': email_preview,
+        'whatsapp_preview': whatsapp_preview,
     })
-
 
 @login_required
 def fetch_customers_api(request):
@@ -116,11 +99,10 @@ def fetch_customers_api(request):
         for customer in customers
     ]
     return JsonResponse({'customers': data})
+
 @login_required
 def send_shipping_bill(request):
     if request.method == 'POST':
-        # Process the session data and send via email/WhatsApp/etc
-        # ...
-        messages.success(request, "Bill sent successfully!")
+        messages.success(request, "✅ Bill sent successfully!")
         return redirect('shipping_billing')
     return redirect('shipping_billing')

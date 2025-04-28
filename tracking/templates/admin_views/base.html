@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,39 +7,6 @@
   <title>{% block title %}Naiyuan Admin{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-</head>
-
-<body class="bg-gray-100 min-h-screen text-black transition-colors duration-300">
-
-  <!-- ✅ Success & Error Messages Block -->
-  {% if messages %}
-  <div class="fixed top-6 right-6 space-y-4 z-50">
-    {% for message in messages %}
-      {% if message.tags == 'success' %}
-        <div class="flex items-center gap-3 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md animate-slide-in">
-          <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="text-sm font-medium">{{ message }}</div>
-        </div>
-      {% elif message.tags == 'error' %}
-        <div class="flex items-center gap-3 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md animate-slide-in">
-          <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="text-sm font-medium">{{ message }}</div>
-        </div>
-      {% elif message.tags == 'warning' %}
-        <div class="flex items-center gap-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg shadow-md animate-slide-in">
-          <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M12 8v4m0 4h.01M5.455 19h13.09A2.455 2.455 0 0021 16.545V7.455A2.455 2.455 0 0018.545 5H5.455A2.455 2.455 0 003 7.455v9.09A2.455 2.455 0 005.455 19z" />
-          </svg>
-          <div class="text-sm font-medium">{{ message }}</div>
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-
   <style>
     @keyframes slide-in {
       0% { transform: translateX(100%); opacity: 0; }
@@ -47,8 +16,46 @@
       animation: slide-in 0.4s ease-out forwards;
     }
   </style>
-{% endif %}
+</head>
 
+<body class="bg-gray-100 min-h-screen text-black transition-colors duration-300">
+
+  <!-- ✅ Universal Success & Error Messages Block -->
+  {% if messages %}
+    <div class="fixed top-6 right-6 space-y-4 z-50">
+      {% for message in messages %}
+        <div class="flex items-center gap-3 p-4 rounded-lg shadow-md animate-slide-in
+          {% if message.tags == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700
+          {% elif message.tags == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700
+          {% elif message.tags == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700
+          {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700
+          {% endif %}
+        ">
+          <!-- Icon -->
+          {% if message.tags == 'success' %}
+            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {% elif message.tags == 'error' %}
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {% elif message.tags == 'warning' %}
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 8v4m0 4h.01M5.455 19h13.09A2.455 2.455 0 0021 16.545V7.455A2.455 2.455 0 0018.545 5H5.455A2.455 2.455 0 003 7.455v9.09A2.455 2.455 0 005.455 19z" />
+            </svg>
+          {% else %}
+            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M13 16h-1v-4h-1m1-4h.01M12 20h.01M12 4h.01M20 12h.01M4 12h.01M16.24 7.76l-.707.707M7.76 16.24l-.707.707M16.24 16.24l.707.707M7.76 7.76l.707.707" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {% endif %}
+
+          <!-- Message Text -->
+          <div class="text-sm font-medium">{{ message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <!-- Main Page Content -->
   <div class="max-w-4xl mx-auto p-6">

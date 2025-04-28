@@ -18,10 +18,6 @@ NOTIFICATION_TEMPLATE_MAPPING = {
     'pickup': {
         'email': 'emails/pickup_notification_email.html',
         'whatsapp': 'whatsapp/pickup_notification.txt',
-    },
-    'billing': {
-        'email': 'emails/billing_notification_email.html',
-        'whatsapp': 'whatsapp/billing_notification.txt',
     }
 }
 
@@ -30,7 +26,6 @@ SUBJECT_TEMPLATE_MAPPING = {
     'departure': '{customer_name}, your shipment is on the way to you! 📦',
     'arrival': '{customer_name}, your goods have landed! ✈️',
     'pickup': '{customer_name}, your shipment is ready for pickup! 📦',
-    'billing': '{customer_name}, your shipment billing information 💵',
 }
 
 # === Preview text templates ===
@@ -38,7 +33,6 @@ PREVIEW_TEMPLATE_MAPPING = {
     'departure': 'Your shipment is on the way. Track it easily here!',
     'arrival': 'Your goods have landed. Get ready!',
     'pickup': 'Your shipment is ready for pickup!',
-    'billing': 'Here is your shipment billing summary.',
 }
 
 @login_required
@@ -72,32 +66,15 @@ def preview_notification_view(request):
             'error': 'No customers found for this shipment.'
         })
 
-    if data['notification_type'] == 'billing':
-        # Billing recalculates fresh
-        shipping_cost_usd = customer.weight * shipment.shipping_rate
-        shipping_cost_ngn = shipping_cost_usd * shipment.exchange_rate
-        total_today = round(shipping_cost_ngn + customer.clearing_cost, 2)
-
-        context = {
-            'customer_name': customer.name,
-            'tracking_number': shipment.tracking_number,
-            'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
-            'weight': customer.weight,
-            'shipping_cost': round(shipping_cost_usd, 2),
-            'clearing_cost': customer.clearing_cost,
-            'exchange_rate': shipment.exchange_rate,
-            'total_today': total_today,
-        }
-    else:
-        context = {
-            'customer_name': customer.name,
-            'tracking_number': shipment.tracking_number,
-            'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
-            'weight': customer.weight,
-            'shipping_cost': customer.shipping_cost,
-            'clearing_cost': customer.clearing_cost,
-            'total_today': customer.total,
-        }
+    context = {
+        'customer_name': customer.name,
+        'tracking_number': shipment.tracking_number,
+        'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
+        'weight': customer.weight,
+        'shipping_cost': customer.shipping_cost,
+        'clearing_cost': customer.clearing_cost,
+        'total_today': customer.total,
+    }
 
     templates = NOTIFICATION_TEMPLATE_MAPPING.get(data['notification_type'], {})
 
@@ -111,16 +88,6 @@ def preview_notification_view(request):
 
     if 'whatsapp' in selected_channels and templates.get('whatsapp'):
         whatsapp_preview = render_to_string(templates['whatsapp'], context).strip()
-
-    # Debugging print
-    print("=== Debugging Preview Page ===")
-    print("- Notification Type:", data['notification_type'])
-    print("- Selected Channels:", selected_channels)
-    print("- Email Template:", templates.get('email'))
-    print("- WhatsApp Template:", templates.get('whatsapp'))
-    print("- Email Preview:", email_preview[:200] if email_preview else None)
-    print("- WhatsApp Preview:", whatsapp_preview[:200] if whatsapp_preview else None)
-    print("===============================")
 
     return render(request, 'admin_views/preview_notification.html', {
         'shipment': shipment,
@@ -142,36 +109,19 @@ def send_notifications(request):
     shipment = get_object_or_404(Shipment, id=data['shipment_id'])
 
     for customer in shipment.customers.all():
-        if data['notification_type'] == 'billing':
-            shipping_cost_usd = customer.weight * shipment.shipping_rate
-            shipping_cost_ngn = shipping_cost_usd * shipment.exchange_rate
-            total_today = round(shipping_cost_ngn + customer.clearing_cost, 2)
-
-            context = {
-                'customer_name': customer.name,
-                'tracking_number': shipment.tracking_number,
-                'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
-                'weight': customer.weight,
-                'shipping_cost': round(shipping_cost_usd, 2),
-                'clearing_cost': customer.clearing_cost,
-                'exchange_rate': shipment.exchange_rate,
-                'total_today': total_today,
-            }
-        else:
-            context = {
-                'customer_name': customer.name,
-                'tracking_number': shipment.tracking_number,
-                'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
-                'weight': customer.weight,
-                'shipping_cost': customer.shipping_cost,
-                'clearing_cost': customer.clearing_cost,
-                'total_today': customer.total,
-            }
+        context = {
+            'customer_name': customer.name,
+            'tracking_number': shipment.tracking_number,
+            'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
+            'weight': customer.weight,
+            'shipping_cost': customer.shipping_cost,
+            'clearing_cost': customer.clearing_cost,
+            'total_today': customer.total,
+        }
 
         templates = NOTIFICATION_TEMPLATE_MAPPING.get(data['notification_type'], {})
         selected_channels = [c.lower() for c in data['channels']]
 
-        # Dynamic subject and preview text
         subject_template = SUBJECT_TEMPLATE_MAPPING.get(data['notification_type'], 'Naiyuan Mart Shipment Update')
         subject = subject_template.format(customer_name=customer.name)
 
