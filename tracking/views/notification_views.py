@@ -112,7 +112,7 @@ def send_notifications(request):
         context = {
             'customer_name': customer.name,
             'tracking_number': shipment.tracking_number,
-            'tracking_url': f"https://naiyuanmart.com/track/{shipment.tracking_number}",
+            'tracking_url': f"https://shipping.naiyuanmart.com/{shipment.tracking_number}",
             'weight': customer.weight,
             'shipping_cost': customer.shipping_cost,
             'clearing_cost': customer.clearing_cost,
