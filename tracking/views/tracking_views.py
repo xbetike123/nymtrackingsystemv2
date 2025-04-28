@@ -20,10 +20,12 @@ def track_shipment(request):
                 status.local_time = localtime(ts, wat)
                 enriched_statuses.append(status)
         except Shipment.DoesNotExist:
-            error = "No shipment found with that admin_views number."
+            error = "❌ Shipment not found. Please check your tracking number."
 
-    return render(request, 'admin_views/track_result.html' if shipment else 'admin_views/track_shipment.html', {
+    template = 'admin_views/track_result.html' if shipment else 'admin_views/track_shipment.html'
+
+    return render(request, template, {
         'shipment': shipment,
         'statuses': enriched_statuses,
         'error': error
-    } if shipment or error else {})
+    })

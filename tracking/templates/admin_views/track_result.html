@@ -6,46 +6,20 @@
   <title>Track Shipment</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .timeline-step {
-      display: flex;
-      gap: 1rem;
-      position: relative;
-    }
-    .timeline-content {
-      flex: 1;
-    }
+    .timeline-step { display: flex; gap: 1rem; position: relative; }
+    .timeline-content { flex: 1; }
     .timeline-circle {
-      position: relative;
-      z-index: 10;
-      min-width: 20px;
-      height: 20px;
-      border-radius: 9999px;
-      background-color: #059669;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative; z-index: 10; min-width: 20px; height: 20px;
+      border-radius: 9999px; background-color: #059669;
+      color: white; font-size: 12px; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
     }
     .timeline-circle.gray {
-      background-color: white;
-      border: 2px solid #d1d5db;
-      color: #d1d5db;
+      background-color: white; border: 2px solid #d1d5db; color: #d1d5db;
     }
     .timeline-connector {
-      position: absolute;
-      top: 0;
-      left: 9px;
-      width: 2px;
-      height: 100%;
-      background-image: repeating-linear-gradient(
-        to bottom,
-        #059669,
-        #059669 4px,
-        transparent 4px,
-        transparent 8px
-      );
+      position: absolute; top: 0; left: 9px; width: 2px; height: 100%;
+      background-image: repeating-linear-gradient(to bottom, #059669, #059669 4px, transparent 4px, transparent 8px);
       z-index: 0;
     }
   </style>
@@ -64,7 +38,7 @@
 
     <div class="p-6">
       <h3 class="text-gray-700 font-semibold text-sm mb-1">Ship To</h3>
-      <p class="text-gray-800 font-bold text-base mb-6">{{ shipment.destination }}</p> <!-- ✅ Corrected: destination instead of location -->
+      <p class="text-gray-800 font-bold text-base mb-6">{{ shipment.destination }}</p> <!-- ✅ Corrected -->
 
       <div class="relative">
         <div class="timeline-connector"></div>
@@ -83,7 +57,7 @@
             </div>
           {% endfor %}
         {% else %}
-          <p class="text-center text-gray-500 mt-4">⚠️ No tracking updates available yet. Please check back later.</p> <!-- ✅ Added safe fallback -->
+          <p class="text-center text-gray-500 mt-4">⚠️ No tracking updates available yet. Please check back later.</p> <!-- ✅ Safe fallback -->
         {% endif %}
 
         <div class="timeline-step mb-6">

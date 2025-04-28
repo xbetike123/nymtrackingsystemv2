@@ -13,7 +13,7 @@
         <select name="shipment_id" required class="w-full px-4 py-2 border rounded">
           <option value="">-- Select Shipment --</option>
           {% for s in shipments %}
-            <option value="{{ s.id }}">{{ s.tracking_number }}{% if s.destination %} — {{ s.destination }}{% endif %}</option>
+            <option value="{{ s.id }}">{{ s.tracking_number }}{% if s.destination %} — {{ s.destination }}{% endif %}</option> <!-- ✅ Fixed field -->
           {% endfor %}
         </select>
       </div>
@@ -25,8 +25,8 @@
           <option value="">-- Select Type --</option>
           <option value="departure">Departure</option>
           <option value="arrival">Arrival</option>
-          <option value="pickup">Ready for Pickup</option> <!-- ✅ Fixed -->
-          <option value="billing">Billing</option> <!-- (optional) Add if needed -->
+          <option value="pickup">Ready for Pickup</option> <!-- ✅ Fixed name -->
+          <option value="billing">Billing</option>
         </select>
       </div>
 
