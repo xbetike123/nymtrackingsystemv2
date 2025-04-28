@@ -1,13 +1,6 @@
 {% extends "admin_views/base.html" %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Send Shipment Notifications</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
+<div class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-10">
   <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-2xl">
     <h2 class="text-2xl font-bold mb-6 text-center">📨 Send Notification</h2>
 
@@ -20,7 +13,7 @@
         <select name="shipment_id" required class="w-full px-4 py-2 border rounded">
           <option value="">-- Select Shipment --</option>
           {% for s in shipments %}
-            <option value="{{ s.id }}">{{ s.tracking_number }} — {{ s.location }}</option>
+            <option value="{{ s.id }}">{{ s.tracking_number }}{% if s.destination %} — {{ s.destination }}{% endif %}</option>
           {% endfor %}
         </select>
       </div>
@@ -32,7 +25,8 @@
           <option value="">-- Select Type --</option>
           <option value="departure">Departure</option>
           <option value="arrival">Arrival</option>
-          <option value="pickup_ready">Ready for Pickup</option>
+          <option value="pickup">Ready for Pickup</option> <!-- ✅ Fixed -->
+          <option value="billing">Billing</option> <!-- (optional) Add if needed -->
         </select>
       </div>
 
@@ -62,6 +56,5 @@
       <a href="{% url 'admin_dashboard' %}" class="text-sm text-blue-500 hover:underline">← Back to Dashboard</a>
     </div>
   </div>
-</body>
-</html>
+</div>
 {% endblock %}
